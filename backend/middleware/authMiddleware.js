@@ -31,4 +31,14 @@ const protect = async (req, res, next) => {
     }
 };
 
-module.exports = { protect };
+// Only allows the request through if the logged-in user is an admin
+const adminOnly = (req, res, next) => {
+    if (req.user && req.user.role === "admin") {
+        next();
+    } else {
+        res.status(403);
+        next(new Error("Not authorized, admin access only"));
+    }
+};
+
+module.exports = { protect, adminOnly };
