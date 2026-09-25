@@ -26,6 +26,7 @@ function Navbar() {
 
                 {user ? (
                     <>
+                        <Link to="/my-courses" style={{ marginRight: "12px" }}>My Courses</Link>
                         <span style={{ marginRight: "12px" }}>
                             Hi, {user.name} ({user.role})
                         </span>
