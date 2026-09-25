@@ -1,7 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import Home from "./pages/public/Home";
 import Courses from "./pages/public/Courses";
+import CourseDetails from "./pages/public/CourseDetails";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 
@@ -13,9 +15,12 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/courses" element={<Courses />} />
+        <Route path="/courses/:id" element={<CourseDetails />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
+
+      <Footer />
     </BrowserRouter>
   );
 }
