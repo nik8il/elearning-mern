@@ -7,7 +7,9 @@ const mongoose = require("mongoose");
 const connectDB = require("./config/db");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const authRoutes = require("./routes/authRoutes");
-const courseRoutes = require("./routes/courseRoutes"); // NEW
+const courseRoutes = require("./routes/courseRoutes");
+const lessonRoutes = require("./routes/lessonRoutes");
+const enrollmentRoutes = require("./routes/enrollmentRoutes"); // NEW
 
 // Connect to MongoDB Atlas
 connectDB();
@@ -19,7 +21,9 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/courses", courseRoutes); // NEW
+app.use("/api/courses", courseRoutes);
+app.use("/api/lessons", lessonRoutes);
+app.use("/api/enrollments", enrollmentRoutes); // NEW
 
 // Home route
 app.get("/", (req, res) => {
