@@ -9,7 +9,8 @@ const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const authRoutes = require("./routes/authRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const lessonRoutes = require("./routes/lessonRoutes");
-const enrollmentRoutes = require("./routes/enrollmentRoutes"); // NEW
+const enrollmentRoutes = require("./routes/enrollmentRoutes");
+const quizRoutes = require("./routes/quizRoutes"); // NEW
 
 // Connect to MongoDB Atlas
 connectDB();
@@ -23,7 +24,8 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/lessons", lessonRoutes);
-app.use("/api/enrollments", enrollmentRoutes); // NEW
+app.use("/api/enrollments", enrollmentRoutes);
+app.use("/api/quizzes", quizRoutes); // NEW
 
 // Home route
 app.get("/", (req, res) => {
