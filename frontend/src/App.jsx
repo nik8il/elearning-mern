@@ -13,6 +13,12 @@ import CourseLearn from "./pages/student/CourseLearn";
 import TakeQuiz from "./pages/student/TakeQuiz";
 import QuizResult from "./pages/student/QuizResult";
 import QuizHistory from "./pages/student/QuizHistory";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ManageCourses from "./pages/admin/ManageCourses";
+import ManageLessons from "./pages/admin/ManageLessons";
+import ManageQuizzes from "./pages/admin/ManageQuizzes";
+import Students from "./pages/admin/Students";
+import Results from "./pages/admin/Results";
 
 function App() {
   return (
@@ -35,7 +41,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/learn/:courseId"
             element={
@@ -44,7 +49,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/quiz/:quizId"
             element={
@@ -53,7 +57,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/quiz-result/:attemptId"
             element={
@@ -62,12 +65,60 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/quiz-history"
             element={
               <ProtectedRoute>
                 <QuizHistory />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute adminOnly={true}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/courses"
+            element={
+              <ProtectedRoute adminOnly={true}>
+                <ManageCourses />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/lessons"
+            element={
+              <ProtectedRoute adminOnly={true}>
+                <ManageLessons />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/quizzes"
+            element={
+              <ProtectedRoute adminOnly={true}>
+                <ManageQuizzes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/students"
+            element={
+              <ProtectedRoute adminOnly={true}>
+                <Students />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/results"
+            element={
+              <ProtectedRoute adminOnly={true}>
+                <Results />
               </ProtectedRoute>
             }
           />
