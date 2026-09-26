@@ -27,6 +27,7 @@ function Navbar() {
                 {user ? (
                     <>
                         <Link to="/my-courses" style={{ marginRight: "12px" }}>My Courses</Link>
+                        <Link to="/quiz-history" style={{ marginRight: "12px" }}>Quiz History</Link>
                         <span style={{ marginRight: "12px" }}>
                             Hi, {user.name} ({user.role})
                         </span>
@@ -45,4 +46,4 @@ function Navbar() {
     );
 }
 
-export default Navbar;
+export default Navbar; 

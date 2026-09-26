@@ -10,6 +10,9 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import MyCourses from "./pages/student/MyCourses";
 import CourseLearn from "./pages/student/CourseLearn";
+import TakeQuiz from "./pages/student/TakeQuiz";
+import QuizResult from "./pages/student/QuizResult";
+import QuizHistory from "./pages/student/QuizHistory";
 
 function App() {
   return (
@@ -41,6 +44,33 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/quiz/:quizId"
+            element={
+              <ProtectedRoute>
+                <TakeQuiz />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/quiz-result/:attemptId"
+            element={
+              <ProtectedRoute>
+                <QuizResult />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/quiz-history"
+            element={
+              <ProtectedRoute>
+                <QuizHistory />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
 
         <Footer />
@@ -49,4 +79,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 

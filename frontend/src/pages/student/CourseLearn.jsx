@@ -7,6 +7,7 @@ function CourseLearn() {
 
     const [course, setCourse] = useState(null);
     const [lessons, setLessons] = useState([]);
+    const [quizzes, setQuizzes] = useState([]);
     const [completedLessons, setCompletedLessons] = useState([]);
     const [selectedLesson, setSelectedLesson] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -25,10 +26,9 @@ function CourseLearn() {
                 setLessons(lessonsResponse.data);
 
                 if (lessonsResponse.data.length > 0) {
-                    setSelectedLesson(lessonsResponse.data[0]); // show first lesson by default
+                    setSelectedLesson(lessonsResponse.data[0]);
                 }
 
-                // Get this student's own enrollment to know what's already completed
                 const enrollmentsResponse = await API.get("/enrollments/my-courses", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
@@ -38,6 +38,12 @@ function CourseLearn() {
                 if (thisEnrollment) {
                     setCompletedLessons(thisEnrollment.completedLessons);
                 }
+
+                // Get quizzes for this course
+                const quizzesResponse = await API.get(`/quizzes/course/${courseId}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setQuizzes(quizzesResponse.data);
             } catch (err) {
                 setError("Failed to load course content.");
             } finally {
@@ -103,7 +109,6 @@ function CourseLearn() {
                 <p>No lessons have been added to this course yet.</p>
             ) : (
                 <div style={{ display: "flex", gap: "20px" }}>
-                    {/* Lesson list on the left */}
                     <div style={{ width: "220px" }}>
                         <h3>Lessons</h3>
                         <ul style={{ listStyle: "none", padding: 0 }}>
@@ -128,7 +133,6 @@ function CourseLearn() {
                         </ul>
                     </div>
 
-                    {/* Selected lesson content on the right */}
                     <div style={{ flex: 1 }}>
                         {selectedLesson && (
                             <div>
@@ -159,8 +163,39 @@ function CourseLearn() {
                     </div>
                 </div>
             )}
+
+            <hr style={{ margin: "30px 0" }} />
+
+            <h2>Quizzes</h2>
+            {quizzes.length === 0 ? (
+                <p>No quizzes available for this course yet.</p>
+            ) : (
+                <ul style={{ listStyle: "none", padding: 0 }}>
+                    {quizzes.map((quiz) => (
+                        <li
+                            key={quiz._id}
+                            style={{
+                                border: "1px solid #ddd",
+                                borderRadius: "8px",
+                                padding: "12px",
+                                marginBottom: "10px",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                            }}
+                        >
+                            <span>{quiz.title}</span>
+                            <Link to={`/quiz/${quiz._id}`}>
+                                <button style={{ padding: "6px 14px", cursor: "pointer" }}>
+                                    Take Quiz
+                                </button>
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 }
 
-export default CourseLearn;
+export default CourseLearn; 
