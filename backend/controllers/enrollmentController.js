@@ -72,8 +72,39 @@ const checkEnrollment = async (req, res) => {
     }
 };
 
+// Mark a lesson as complete for the logged-in student
+const markLessonComplete = async (req, res) => {
+    try {
+        const { courseId, lessonId } = req.body;
+
+        const enrollment = await Enrollment.findOne({
+            student: req.user._id,
+            course: courseId,
+        });
+
+        if (!enrollment) {
+            return res.status(404).json({
+                message: "You are not enrolled in this course",
+            });
+        }
+
+        // Only add the lesson if it's not already marked complete
+        if (!enrollment.completedLessons.includes(lessonId)) {
+            enrollment.completedLessons.push(lessonId);
+            await enrollment.save();
+        }
+
+        res.status(200).json(enrollment);
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 module.exports = {
     enrollInCourse,
     getMyEnrollments,
     checkEnrollment,
+    markLessonComplete,
 };

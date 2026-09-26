@@ -4,6 +4,7 @@ const {
     enrollInCourse,
     getMyEnrollments,
     checkEnrollment,
+    markLessonComplete,
 } = require("../controllers/enrollmentController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -18,5 +19,6 @@ router.get("/my-courses", protect, getMyEnrollments);
 
 // Check enrollment status
 router.get("/check/:courseId", protect, checkEnrollment);
+router.put("/complete", protect, markLessonComplete); 
 
 module.exports = router;
