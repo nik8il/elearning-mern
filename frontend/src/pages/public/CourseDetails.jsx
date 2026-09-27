@@ -9,6 +9,7 @@ function CourseDetails() {
     const navigate = useNavigate();
 
     const [course, setCourse] = useState(null);
+    const [lessonCount, setLessonCount] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -16,12 +17,14 @@ function CourseDetails() {
     const [enrolling, setEnrolling] = useState(false);
     const [enrollMessage, setEnrollMessage] = useState("");
 
-    // Fetch the course details
     useEffect(() => {
         const fetchCourse = async () => {
             try {
                 const response = await API.get(`/courses/${id}`);
                 setCourse(response.data);
+
+                const lessonsResponse = await API.get(`/lessons/course/${id}`);
+                setLessonCount(lessonsResponse.data.length);
             } catch (err) {
                 setError("Course not found.");
             } finally {
@@ -32,10 +35,9 @@ function CourseDetails() {
         fetchCourse();
     }, [id]);
 
-    // If the user is logged in, check whether they're already enrolled
     useEffect(() => {
         const checkStatus = async () => {
-            if (!user) return; // skip if not logged in
+            if (!user) return;
 
             try {
                 const token = localStorage.getItem("token");
@@ -44,7 +46,7 @@ function CourseDetails() {
                 });
                 setIsEnrolled(response.data.enrolled);
             } catch (err) {
-                // silently ignore, just leave isEnrolled as false
+                // ignore
             }
         };
 
@@ -52,7 +54,6 @@ function CourseDetails() {
     }, [id, user]);
 
     const handleEnroll = async () => {
-        // Not logged in — send them to login first
         if (!user) {
             navigate("/login");
             return;
@@ -78,41 +79,69 @@ function CourseDetails() {
     };
 
     if (loading) {
-        return <p style={{ textAlign: "center" }}>Loading course...</p>;
+        return <p style={{ textAlign: "center", padding: "40px" }}>Loading course...</p>;
     }
 
     if (error) {
-        return <p style={{ textAlign: "center", color: "red" }}>{error}</p>;
+        return <p style={{ textAlign: "center", color: "red", padding: "40px" }}>{error}</p>;
     }
 
     return (
-        <div style={{ padding: "20px", maxWidth: "700px", margin: "0 auto" }}>
+        <div className="page-container" style={{ maxWidth: "750px" }}>
             <Link to="/courses">← Back to Courses</Link>
 
-            <h1>{course.title}</h1>
-            <p><strong>Category:</strong> {course.category}</p>
-            <p><strong>Instructor:</strong> {course.instructor}</p>
-            <p>{course.description}</p>
+            <div className="card" style={{ marginTop: "16px" }}>
+                <div style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    color: "#2563eb",
+                    backgroundColor: "#eff6ff",
+                    padding: "4px 10px",
+                    borderRadius: "12px",
+                    display: "inline-block",
+                    marginBottom: "12px",
+                }}>
+                    {course.category}
+                </div>
 
-            {enrollMessage && <p>{enrollMessage}</p>}
+                <h1 style={{ margin: "0 0 12px" }}>{course.title}</h1>
 
-            {isEnrolled ? (
-                <Link to={`/learn/${course._id}`}>
-                    <button style={{ padding: "10px 24px", fontSize: "16px", cursor: "pointer" }}>
-                        Go to Course
+                <div style={{ display: "flex", gap: "20px", color: "#6b7280", fontSize: "14px", marginBottom: "20px" }}>
+                    <span>👤 {course.instructor}</span>
+                    <span>📖 {lessonCount} {lessonCount === 1 ? "lesson" : "lessons"}</span>
+                </div>
+
+                <p style={{ lineHeight: "1.6", marginBottom: "24px" }}>{course.description}</p>
+
+                {enrollMessage && (
+                    <p style={{
+                        padding: "10px",
+                        backgroundColor: enrollMessage.includes("success") ? "#d1fae5" : "#fee2e2",
+                        borderRadius: "6px",
+                        color: enrollMessage.includes("success") ? "#065f46" : "#991b1b",
+                    }}>
+                        {enrollMessage}
+                    </p>
+                )}
+
+                {isEnrolled ? (
+                    <Link to={`/learn/${course._id}`}>
+                        <button style={{ padding: "12px 28px", fontSize: "16px" }}>
+                            Go to Course
+                        </button>
+                    </Link>
+                ) : (
+                    <button
+                        onClick={handleEnroll}
+                        disabled={enrolling}
+                        style={{ padding: "12px 28px", fontSize: "16px" }}
+                    >
+                        {enrolling ? "Enrolling..." : "Enroll Now"}
                     </button>
-                </Link>
-            ) : (
-                <button
-                    onClick={handleEnroll}
-                    disabled={enrolling}
-                    style={{ padding: "10px 24px", fontSize: "16px", cursor: "pointer" }}
-                >
-                    {enrolling ? "Enrolling..." : "Enroll Now"}
-                </button>
-            )}
+                )}
+            </div>
         </div>
     );
 }
 
-export default CourseDetails;
+export default CourseDetails; 

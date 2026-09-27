@@ -2,6 +2,20 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import API from "../../api/axios";
 
+function getYouTubeEmbedUrl(url) {
+    if (!url) return null;
+
+    const match = url.match(
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    );
+
+    if (match && match[1]) {
+        return `https://www.youtube.com/embed/${match[1]}`;
+    }
+
+    return null;
+}
+
 function CourseLearn() {
     const { courseId } = useParams();
 
@@ -39,7 +53,6 @@ function CourseLearn() {
                     setCompletedLessons(thisEnrollment.completedLessons);
                 }
 
-                // Get quizzes for this course
                 const quizzesResponse = await API.get(`/quizzes/course/${courseId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
@@ -71,11 +84,11 @@ function CourseLearn() {
     };
 
     if (loading) {
-        return <p style={{ textAlign: "center" }}>Loading course content...</p>;
+        return <p style={{ textAlign: "center", padding: "40px" }}>Loading course content...</p>;
     }
 
     if (error) {
-        return <p style={{ textAlign: "center", color: "red" }}>{error}</p>;
+        return <p style={{ textAlign: "center", color: "red", padding: "40px" }}>{error}</p>;
     }
 
     const progressPercent =
@@ -85,16 +98,27 @@ function CourseLearn() {
 
     const isLessonComplete = (lessonId) => completedLessons.includes(lessonId);
 
+    const currentIndex = lessons.findIndex((l) => l._id === selectedLesson?._id);
+    const goToLesson = (index) => {
+        if (index >= 0 && index < lessons.length) {
+            setSelectedLesson(lessons[index]);
+        }
+    };
+
     return (
-        <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
+        <div className="page-container">
             <Link to="/my-courses">← Back to My Courses</Link>
 
-            <h1>{course.title}</h1>
+            <h1 style={{ marginBottom: "6px" }}>{course.title}</h1>
 
-            <div style={{ marginBottom: "20px" }}>
-                <p><strong>Progress: {progressPercent}%</strong></p>
-                <div style={{ background: "#eee", borderRadius: "6px", height: "16px", width: "100%" }}>
+            <div style={{ marginBottom: "24px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", marginBottom: "4px" }}>
+                    <strong>Course Progress</strong>
+                    <span>{progressPercent}% · {completedLessons.length}/{lessons.length} lessons</span>
+                </div>
+                <div style={{ background: "#eee", borderRadius: "6px", height: "14px", width: "100%" }}>
                     <div
+                        className="progress-fill"
                         style={{
                             width: `${progressPercent}%`,
                             background: "#4caf50",
@@ -108,10 +132,10 @@ function CourseLearn() {
             {lessons.length === 0 ? (
                 <p>No lessons have been added to this course yet.</p>
             ) : (
-                <div style={{ display: "flex", gap: "20px" }}>
-                    <div style={{ width: "220px" }}>
-                        <h3>Lessons</h3>
-                        <ul style={{ listStyle: "none", padding: 0 }}>
+                <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+                    <div className="card" style={{ width: "240px", padding: "12px" }}>
+                        <h3 style={{ marginTop: 0 }}>Lessons</h3>
+                        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                             {lessons.map((lesson) => (
                                 <li key={lesson._id} style={{ marginBottom: "8px" }}>
                                     <button
@@ -119,10 +143,10 @@ function CourseLearn() {
                                         style={{
                                             width: "100%",
                                             textAlign: "left",
-                                            padding: "8px",
-                                            cursor: "pointer",
-                                            background: selectedLesson?._id === lesson._id ? "#e0e0e0" : "transparent",
-                                            border: "1px solid #ddd",
+                                            padding: "10px",
+                                            background: selectedLesson?._id === lesson._id ? "#eff6ff" : "white",
+                                            color: selectedLesson?._id === lesson._id ? "#2563eb" : "#374151",
+                                            border: selectedLesson?._id === lesson._id ? "1px solid #2563eb" : "1px solid #e5e7eb",
                                         }}
                                     >
                                         {isLessonComplete(lesson._id) ? "✅ " : "▫️ "}
@@ -133,66 +157,93 @@ function CourseLearn() {
                         </ul>
                     </div>
 
-                    <div style={{ flex: 1 }}>
+                    <div className="card" style={{ flex: 1, minWidth: "280px" }}>
                         {selectedLesson && (
                             <div>
-                                <h2>{selectedLesson.title}</h2>
-                                <p>{selectedLesson.content}</p>
+                                <h2 style={{ marginTop: 0 }}>{selectedLesson.title}</h2>
 
-                                {selectedLesson.videoUrl && (
-                                    <p>
-                                        <a href={selectedLesson.videoUrl} target="_blank" rel="noreferrer">
-                                            Watch video
-                                        </a>
-                                    </p>
+                                {selectedLesson.videoUrl && getYouTubeEmbedUrl(selectedLesson.videoUrl) && (
+                                    <div style={{
+                                        position: "relative",
+                                        paddingBottom: "56.25%",
+                                        height: 0,
+                                        marginBottom: "16px",
+                                    }}>
+                                        <iframe
+                                            src={getYouTubeEmbedUrl(selectedLesson.videoUrl)}
+                                            title={selectedLesson.title}
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                            style={{
+                                                position: "absolute",
+                                                top: 0,
+                                                left: 0,
+                                                width: "100%",
+                                                height: "100%",
+                                                border: "none",
+                                                borderRadius: "8px",
+                                            }}
+                                        ></iframe>
+                                    </div>
                                 )}
 
+                                <p style={{ lineHeight: "1.6" }}>{selectedLesson.content}</p>
+
                                 {isLessonComplete(selectedLesson._id) ? (
-                                    <p style={{ color: "green" }}>✅ Completed</p>
+                                    <p style={{ color: "#16a34a", fontWeight: "bold" }}>✅ Completed</p>
                                 ) : (
                                     <button
                                         onClick={() => handleMarkComplete(selectedLesson._id)}
                                         disabled={marking}
-                                        style={{ padding: "8px 16px", cursor: "pointer" }}
                                     >
                                         {marking ? "Marking..." : "Mark as Complete"}
                                     </button>
                                 )}
+
+                                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "20px", borderTop: "1px solid #eee", paddingTop: "16px" }}>
+                                    <button
+                                        onClick={() => goToLesson(currentIndex - 1)}
+                                        disabled={currentIndex <= 0}
+                                        style={{ backgroundColor: currentIndex <= 0 ? "#9ca3af" : "#6b7280" }}
+                                    >
+                                        ← Previous
+                                    </button>
+                                    <button
+                                        onClick={() => goToLesson(currentIndex + 1)}
+                                        disabled={currentIndex >= lessons.length - 1}
+                                    >
+                                        Next →
+                                    </button>
+                                </div>
                             </div>
                         )}
                     </div>
                 </div>
             )}
 
-            <hr style={{ margin: "30px 0" }} />
-
-            <h2>Quizzes</h2>
+            <h2 style={{ marginTop: "40px" }}>Quizzes</h2>
             {quizzes.length === 0 ? (
                 <p>No quizzes available for this course yet.</p>
             ) : (
-                <ul style={{ listStyle: "none", padding: 0 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                     {quizzes.map((quiz) => (
-                        <li
+                        <div
                             key={quiz._id}
+                            className="card"
                             style={{
-                                border: "1px solid #ddd",
-                                borderRadius: "8px",
-                                padding: "12px",
-                                marginBottom: "10px",
+                                padding: "14px 20px",
                                 display: "flex",
                                 justifyContent: "space-between",
                                 alignItems: "center",
                             }}
                         >
-                            <span>{quiz.title}</span>
+                            <span>📝 {quiz.title}</span>
                             <Link to={`/quiz/${quiz._id}`}>
-                                <button style={{ padding: "6px 14px", cursor: "pointer" }}>
-                                    Take Quiz
-                                </button>
+                                <button>Take Quiz</button>
                             </Link>
-                        </li>
+                        </div>
                     ))}
-                </ul>
+                </div>
             )}
         </div>
     );

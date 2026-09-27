@@ -24,11 +24,17 @@ button {
     border: none;
     border-radius: 6px;
     font-size: 14px;
-    transition: background-color 0.2s;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
 }
 
 button:hover:not(:disabled) {
     background-color: #1d4ed8;
+}
+
+button:active:not(:disabled) {
+    transform: scale(0.98);
 }
 
 button:disabled {
@@ -43,6 +49,7 @@ select {
     border-radius: 6px;
     font-size: 14px;
     font-family: inherit;
+    padding: 8px;
 }
 
 input:focus,
@@ -50,6 +57,7 @@ textarea:focus,
 select:focus {
     outline: none;
     border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 table {
@@ -60,4 +68,31 @@ table {
 
 h1, h2, h3 {
     color: #111827;
+}
+
+/* Reusable card style */
+.card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+/* Reusable page section spacing */
+.page-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+/* Progress bar animation */
+.progress-fill {
+    transition: width 0.5s ease;
 } 
