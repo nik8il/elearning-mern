@@ -5,75 +5,127 @@ function Home() {
         <div>
             {/* Hero section */}
             <div style={{
-                background: "linear-gradient(135deg, #2563eb, #1e40af)",
+                position: "relative",
+                background: "linear-gradient(135deg, #4338ca 0%, #4f46e5 50%, #7c3aed 100%)",
                 color: "white",
-                padding: "80px 20px",
+                padding: "100px 20px 120px",
                 textAlign: "center",
+                overflow: "hidden",
             }}>
-                <h1 style={{ fontSize: "42px", margin: "0 0 16px", color: "white" }}>
-                    Learn. Practice. Grow.
-                </h1>
-                <p style={{ fontSize: "18px", maxWidth: "600px", margin: "0 auto 30px", opacity: 0.9 }}>
-                    A simple, focused e-learning platform to help you build real skills
-                    through structured courses and hands-on quizzes.
-                </p>
-                <Link to="/courses">
-                    <button style={{
-                        padding: "14px 32px",
-                        fontSize: "16px",
-                        backgroundColor: "white",
-                        color: "#2563eb",
-                        fontWeight: "bold",
+                {/* Decorative blurred circles */}
+                <div style={{
+                    position: "absolute",
+                    top: "-60px",
+                    right: "-60px",
+                    width: "220px",
+                    height: "220px",
+                    borderRadius: "50%",
+                    background: "rgba(255,255,255,0.08)",
+                }}></div>
+                <div style={{
+                    position: "absolute",
+                    bottom: "-80px",
+                    left: "-40px",
+                    width: "260px",
+                    height: "260px",
+                    borderRadius: "50%",
+                    background: "rgba(255,255,255,0.06)",
+                }}></div>
+
+                <div style={{ position: "relative", zIndex: 1 }}>
+                    <div className="badge" style={{
+                        backgroundColor: "rgba(255,255,255,0.15)",
+                        color: "white",
+                        marginBottom: "24px",
                     }}>
-                        Explore Courses
-                    </button>
-                </Link>
-            </div>
-
-            {/* Why Learn With Us */}
-            <div className="page-container">
-                <h2 style={{ textAlign: "center", marginBottom: "40px" }}>Why Learn With Us</h2>
-
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", justifyContent: "center" }}>
-                    <div className="card" style={{ width: "260px", textAlign: "center" }}>
-                        <div style={{ fontSize: "32px", marginBottom: "10px" }}>📚</div>
-                        <h3>Structured Courses</h3>
-                        <p style={{ color: "#6b7280" }}>
-                            Clear lessons organized in the right order, so you always know what's next.
-                        </p>
+                        🎓 Learn at your own pace
                     </div>
 
-                    <div className="card" style={{ width: "260px", textAlign: "center" }}>
-                        <div style={{ fontSize: "32px", marginBottom: "10px" }}>📊</div>
-                        <h3>Track Your Progress</h3>
-                        <p style={{ color: "#6b7280" }}>
-                            See exactly how much of each course you've completed, lesson by lesson.
-                        </p>
-                    </div>
+                    <h1 style={{
+                        fontSize: "52px",
+                        fontWeight: 800,
+                        margin: "0 0 20px",
+                        color: "white",
+                        letterSpacing: "-1px",
+                        lineHeight: 1.15,
+                    }}>
+                        Master new skills,<br />one lesson at a time.
+                    </h1>
 
-                    <div className="card" style={{ width: "260px", textAlign: "center" }}>
-                        <div style={{ fontSize: "32px", marginBottom: "10px" }}>📝</div>
-                        <h3>Test Your Knowledge</h3>
-                        <p style={{ color: "#6b7280" }}>
-                            Take quizzes after each course and get instant, detailed results.
-                        </p>
+                    <p style={{
+                        fontSize: "18px",
+                        maxWidth: "560px",
+                        margin: "0 auto 36px",
+                        opacity: 0.9,
+                        lineHeight: 1.6,
+                    }}>
+                        Structured courses, hands-on quizzes, and clear progress tracking —
+                        everything you need to actually finish what you start.
+                    </p>
+
+                    <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
+                        <Link to="/courses">
+                            <button style={{
+                                padding: "14px 30px",
+                                fontSize: "15px",
+                                backgroundColor: "white",
+                                color: "var(--color-primary)",
+                            }}>
+                                Explore Courses →
+                            </button>
+                        </Link>
+                        <Link to="/register">
+                            <button className="btn-outline" style={{
+                                padding: "14px 30px",
+                                fontSize: "15px",
+                                color: "white",
+                                borderColor: "rgba(255,255,255,0.5)",
+                            }}>
+                                Create Free Account
+                            </button>
+                        </Link>
                     </div>
                 </div>
             </div>
 
-            {/* Call to action */}
-            <div style={{
-                textAlign: "center",
-                padding: "50px 20px",
-                backgroundColor: "#eff6ff",
-            }}>
-                <h2>Ready to start learning?</h2>
-                <p style={{ color: "#6b7280", marginBottom: "20px" }}>
+            {/* Feature cards - overlapping the hero slightly */}
+            <div className="page-container" style={{ marginTop: "-60px", position: "relative", zIndex: 2 }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", justifyContent: "center" }}>
+                    {[
+                        { icon: "📚", title: "Structured Courses", text: "Lessons organized in the right order, so you always know what's next." },
+                        { icon: "📊", title: "Track Your Progress", text: "See exactly how much of each course you've completed." },
+                        { icon: "📝", title: "Test Your Knowledge", text: "Take quizzes and get instant, detailed results." },
+                    ].map((f) => (
+                        <div key={f.title} className="card card-hover" style={{ width: "300px", textAlign: "center" }}>
+                            <div style={{
+                                width: "52px",
+                                height: "52px",
+                                margin: "0 auto 16px",
+                                borderRadius: "12px",
+                                background: "var(--color-primary-light)",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontSize: "24px",
+                            }}>
+                                {f.icon}
+                            </div>
+                            <h3 style={{ marginBottom: "8px" }}>{f.title}</h3>
+                            <p className="text-muted" style={{ fontSize: "14px", margin: 0 }}>{f.text}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* CTA */}
+            <div className="page-container" style={{ textAlign: "center", padding: "60px 20px" }}>
+                <h2 style={{ marginBottom: "10px" }}>Ready to start learning?</h2>
+                <p className="text-muted" style={{ marginBottom: "24px" }}>
                     Create a free account and enroll in your first course today.
                 </p>
                 <Link to="/register">
-                    <button style={{ padding: "12px 28px", fontSize: "16px" }}>
-                        Get Started
+                    <button style={{ padding: "14px 32px", fontSize: "15px" }}>
+                        Get Started Free
                     </button>
                 </Link>
             </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import API from "../../api/axios";
 
 function TakeQuiz() {
@@ -8,7 +8,7 @@ function TakeQuiz() {
 
     const [quiz, setQuiz] = useState(null);
     const [questions, setQuestions] = useState([]);
-    const [selectedAnswers, setSelectedAnswers] = useState({}); // { questionId: optionIndex }
+    const [selectedAnswers, setSelectedAnswers] = useState({});
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState("");
@@ -41,7 +41,6 @@ function TakeQuiz() {
     };
 
     const handleSubmit = async () => {
-        // Check every question has been answered
         if (Object.keys(selectedAnswers).length < questions.length) {
             alert("Please answer all questions before submitting.");
             return;
@@ -50,7 +49,6 @@ function TakeQuiz() {
         setSubmitting(true);
 
         try {
-            // Convert { questionId: optionIndex } into the array format the backend expects
             const answers = questions.map((q) => ({
                 questionId: q._id,
                 selectedOptionIndex: selectedAnswers[q._id],
@@ -62,7 +60,6 @@ function TakeQuiz() {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            // Go to the result page, passing the attempt ID
             navigate(`/quiz-result/${response.data._id}`);
         } catch (err) {
             setError("Failed to submit quiz. Please try again.");
@@ -71,52 +68,74 @@ function TakeQuiz() {
     };
 
     if (loading) {
-        return <p style={{ textAlign: "center" }}>Loading quiz...</p>;
+        return <p style={{ textAlign: "center", padding: "60px" }} className="text-muted">Loading quiz...</p>;
     }
 
     if (error) {
-        return <p style={{ textAlign: "center", color: "red" }}>{error}</p>;
+        return <p style={{ textAlign: "center", color: "var(--color-danger)", padding: "60px" }}>{error}</p>;
     }
 
+    const answeredCount = Object.keys(selectedAnswers).length;
+
     return (
-        <div style={{ padding: "20px", maxWidth: "700px", margin: "0 auto" }}>
-            <h1>{quiz.title}</h1>
-            <p>{questions.length} questions</p>
+        <div className="page-container" style={{ maxWidth: "700px" }}>
+            <div style={{ marginBottom: "24px" }}>
+                <span className="badge badge-primary" style={{ marginBottom: "10px" }}>Quiz</span>
+                <h1 style={{ margin: "0 0 8px" }}>{quiz.title}</h1>
+                <p className="text-muted" style={{ margin: 0 }}>
+                    {answeredCount} of {questions.length} questions answered
+                </p>
+                <div className="progress-track" style={{ marginTop: "10px" }}>
+                    <div className="progress-fill" style={{
+                        width: `${(answeredCount / questions.length) * 100}%`,
+                        background: "var(--color-primary)",
+                    }}></div>
+                </div>
+            </div>
 
             {questions.map((question, index) => (
-                <div
-                    key={question._id}
-                    style={{
-                        border: "1px solid #ddd",
-                        borderRadius: "8px",
-                        padding: "16px",
-                        marginBottom: "16px",
-                    }}
-                >
-                    <p><strong>Q{index + 1}. {question.questionText}</strong></p>
+                <div key={question._id} className="card" style={{ marginBottom: "16px" }}>
+                    <p style={{ fontWeight: 700, marginBottom: "16px" }}>
+                        <span className="text-faint" style={{ fontWeight: 500 }}>Q{index + 1}.</span> {question.questionText}
+                    </p>
 
-                    {question.options.map((option, optionIndex) => (
-                        <label
-                            key={optionIndex}
-                            style={{ display: "block", padding: "6px 0", cursor: "pointer" }}
-                        >
-                            <input
-                                type="radio"
-                                name={question._id}
-                                checked={selectedAnswers[question._id] === optionIndex}
-                                onChange={() => handleSelect(question._id, optionIndex)}
-                                style={{ marginRight: "8px" }}
-                            />
-                            {option}
-                        </label>
-                    ))}
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                        {question.options.map((option, optionIndex) => {
+                            const selected = selectedAnswers[question._id] === optionIndex;
+                            return (
+                                <label
+                                    key={optionIndex}
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "10px",
+                                        padding: "12px 14px",
+                                        borderRadius: "var(--radius-sm)",
+                                        border: selected ? "2px solid var(--color-primary)" : "1px solid var(--color-border)",
+                                        background: selected ? "var(--color-primary-light)" : "white",
+                                        cursor: "pointer",
+                                        transition: "all 0.15s ease",
+                                    }}
+                                >
+                                    <input
+                                        type="radio"
+                                        name={question._id}
+                                        checked={selected}
+                                        onChange={() => handleSelect(question._id, optionIndex)}
+                                        style={{ margin: 0 }}
+                                    />
+                                    <span style={{ fontSize: "14px", fontWeight: selected ? 600 : 400 }}>{option}</span>
+                                </label>
+                            );
+                        })}
+                    </div>
                 </div>
             ))}
 
             <button
                 onClick={handleSubmit}
                 disabled={submitting}
-                style={{ padding: "10px 24px", fontSize: "16px", cursor: "pointer" }}
+                style={{ width: "100%", padding: "14px", fontSize: "15px" }}
             >
                 {submitting ? "Submitting..." : "Submit Quiz"}
             </button>
@@ -124,4 +143,4 @@ function TakeQuiz() {
     );
 }
 
-export default TakeQuiz;
+export default TakeQuiz; 

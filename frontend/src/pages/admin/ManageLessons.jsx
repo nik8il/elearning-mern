@@ -41,12 +41,10 @@ function ManageLessons() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (!selectedCourse) {
             alert("Please select a course first.");
             return;
         }
-
         const lessonData = { title, content, videoUrl, order, course: selectedCourse };
 
         try {
@@ -59,7 +57,6 @@ function ManageLessons() {
                     headers: { Authorization: `Bearer ${token}` },
                 });
             }
-
             resetForm();
             fetchLessons(selectedCourse);
         } catch (err) {
@@ -77,7 +74,6 @@ function ManageLessons() {
 
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this lesson?")) return;
-
         try {
             await API.delete(`/lessons/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -89,15 +85,15 @@ function ManageLessons() {
     };
 
     return (
-        <div style={{ padding: "20px" }}>
-            <h1>Manage Lessons</h1>
+        <div className="page-container">
+            <h1 style={{ marginBottom: "24px" }}>Manage Lessons</h1>
 
-            <div style={{ marginBottom: "20px" }}>
-                <label><strong>Select Course:</strong></label><br />
+            <div className="card" style={{ marginBottom: "24px", maxWidth: "400px" }}>
+                <label style={{ fontWeight: 600, fontSize: "14px" }}>Select Course</label>
                 <select
                     value={selectedCourse}
                     onChange={(e) => { setSelectedCourse(e.target.value); resetForm(); }}
-                    style={{ padding: "8px", marginTop: "6px", minWidth: "250px" }}
+                    style={{ width: "100%", marginTop: "8px" }}
                 >
                     <option value="">-- Choose a course --</option>
                     {courses.map((course) => (
@@ -108,80 +104,68 @@ function ManageLessons() {
 
             {selectedCourse && (
                 <>
-                    <form onSubmit={handleSubmit} style={{ marginBottom: "30px", maxWidth: "400px" }}>
-                        <h3>{editingId ? "Edit Lesson" : "Add New Lesson"}</h3>
+                    <div className="card" style={{ marginBottom: "30px", maxWidth: "450px" }}>
+                        <h3 style={{ marginTop: 0 }}>{editingId ? "Edit Lesson" : "Add New Lesson"}</h3>
 
-                        <input
-                            type="text"
-                            placeholder="Lesson Title"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            required
-                            style={{ width: "100%", padding: "8px", marginBottom: "8px" }}
-                        />
-                        <textarea
-                            placeholder="Content"
-                            value={content}
-                            onChange={(e) => setContent(e.target.value)}
-                            required
-                            style={{ width: "100%", padding: "8px", marginBottom: "8px" }}
-                        />
-                        <input
-                            type="text"
-                            placeholder="Video URL (optional)"
-                            value={videoUrl}
-                            onChange={(e) => setVideoUrl(e.target.value)}
-                            style={{ width: "100%", padding: "8px", marginBottom: "8px" }}
-                        />
-                        <input
-                            type="number"
-                            placeholder="Order"
-                            value={order}
-                            onChange={(e) => setOrder(Number(e.target.value))}
-                            required
-                            style={{ width: "100%", padding: "8px", marginBottom: "8px" }}
-                        />
+                        <form onSubmit={handleSubmit}>
+                            <input
+                                type="text" placeholder="Lesson Title" value={title}
+                                onChange={(e) => setTitle(e.target.value)} required
+                                style={{ width: "100%", marginBottom: "10px" }}
+                            />
+                            <textarea
+                                placeholder="Content" value={content}
+                                onChange={(e) => setContent(e.target.value)} required
+                                style={{ width: "100%", marginBottom: "10px", minHeight: "80px" }}
+                            />
+                            <input
+                                type="text" placeholder="YouTube Video URL (optional)" value={videoUrl}
+                                onChange={(e) => setVideoUrl(e.target.value)}
+                                style={{ width: "100%", marginBottom: "10px" }}
+                            />
+                            <input
+                                type="number" placeholder="Order" value={order}
+                                onChange={(e) => setOrder(Number(e.target.value))} required
+                                style={{ width: "100%", marginBottom: "16px" }}
+                            />
 
-                        <button type="submit" style={{ padding: "8px 20px", cursor: "pointer" }}>
-                            {editingId ? "Update Lesson" : "Add Lesson"}
-                        </button>
-                        {editingId && (
-                            <button
-                                type="button"
-                                onClick={resetForm}
-                                style={{ padding: "8px 20px", cursor: "pointer", marginLeft: "10px" }}
-                            >
-                                Cancel
-                            </button>
-                        )}
-                    </form>
+                            <div style={{ display: "flex", gap: "10px" }}>
+                                <button type="submit">{editingId ? "Update Lesson" : "Add Lesson"}</button>
+                                {editingId && (
+                                    <button type="button" onClick={resetForm} className="btn-outline">Cancel</button>
+                                )}
+                            </div>
+                        </form>
+                    </div>
 
-                    <h3>Lessons in this Course</h3>
-                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                        <thead>
-                            <tr style={{ borderBottom: "2px solid #ddd", textAlign: "left" }}>
-                                <th style={{ padding: "8px" }}>Order</th>
-                                <th style={{ padding: "8px" }}>Title</th>
-                                <th style={{ padding: "8px" }}></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {lessons.map((lesson) => (
-                                <tr key={lesson._id} style={{ borderBottom: "1px solid #eee" }}>
-                                    <td style={{ padding: "8px" }}>{lesson.order}</td>
-                                    <td style={{ padding: "8px" }}>{lesson.title}</td>
-                                    <td style={{ padding: "8px" }}>
-                                        <button onClick={() => handleEdit(lesson)} style={{ marginRight: "8px", cursor: "pointer" }}>
-                                            Edit
-                                        </button>
-                                        <button onClick={() => handleDelete(lesson._id)} style={{ cursor: "pointer" }}>
-                                            Delete
-                                        </button>
-                                    </td>
+                    <h3 style={{ marginBottom: "14px" }}>Lessons in this Course</h3>
+                    <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+                        <table>
+                            <thead>
+                                <tr style={{ background: "var(--color-bg)", textAlign: "left" }}>
+                                    <th style={{ padding: "14px 20px", fontSize: "12px", textTransform: "uppercase", color: "var(--color-text-muted)" }}>Order</th>
+                                    <th style={{ padding: "14px 20px", fontSize: "12px", textTransform: "uppercase", color: "var(--color-text-muted)" }}>Title</th>
+                                    <th style={{ padding: "14px 20px" }}></th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {lessons.map((lesson) => (
+                                    <tr key={lesson._id} style={{ borderTop: "1px solid var(--color-border)" }}>
+                                        <td style={{ padding: "14px 20px" }}>{lesson.order}</td>
+                                        <td style={{ padding: "14px 20px", fontWeight: 600 }}>{lesson.title}</td>
+                                        <td style={{ padding: "14px 20px" }}>
+                                            <button onClick={() => handleEdit(lesson)} className="btn-outline" style={{ marginRight: "8px", padding: "6px 14px", fontSize: "13px" }}>
+                                                Edit
+                                            </button>
+                                            <button onClick={() => handleDelete(lesson._id)} className="btn-danger" style={{ padding: "6px 14px", fontSize: "13px" }}>
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </>
             )}
         </div>

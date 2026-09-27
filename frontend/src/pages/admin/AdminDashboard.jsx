@@ -27,57 +27,69 @@ function AdminDashboard() {
     }, []);
 
     if (loading) {
-        return <p style={{ textAlign: "center" }}>Loading dashboard...</p>;
+        return <p style={{ textAlign: "center", padding: "60px" }} className="text-muted">Loading dashboard...</p>;
     }
 
     if (error) {
-        return <p style={{ textAlign: "center", color: "red" }}>{error}</p>;
+        return <p style={{ textAlign: "center", color: "var(--color-danger)", padding: "60px" }}>{error}</p>;
     }
 
     const statCards = [
-        { label: "Total Students", value: stats.totalStudents },
-        { label: "Total Courses", value: stats.totalCourses },
-        { label: "Total Quizzes", value: stats.totalQuizzes },
-        { label: "Total Enrollments", value: stats.totalEnrollments },
+        { icon: "👥", label: "Total Students", value: stats.totalStudents, color: "#4f46e5" },
+        { icon: "📚", label: "Total Courses", value: stats.totalCourses, color: "#059669" },
+        { icon: "📝", label: "Total Quizzes", value: stats.totalQuizzes, color: "#d97706" },
+        { icon: "🎯", label: "Total Enrollments", value: stats.totalEnrollments, color: "#db2777" },
     ];
 
     const links = [
-        { to: "/admin/courses", label: "Manage Courses" },
-        { to: "/admin/lessons", label: "Manage Lessons" },
-        { to: "/admin/quizzes", label: "Manage Quizzes" },
-        { to: "/admin/students", label: "View Students" },
-        { to: "/admin/results", label: "View Results" },
+        { to: "/admin/courses", icon: "📚", label: "Manage Courses", desc: "Add, edit or remove courses" },
+        { to: "/admin/lessons", icon: "🎬", label: "Manage Lessons", desc: "Organize lessons per course" },
+        { to: "/admin/quizzes", icon: "📝", label: "Manage Quizzes", desc: "Create quizzes with questions" },
+        { to: "/admin/students", icon: "👥", label: "View Students", desc: "See all registered students" },
+        { to: "/admin/results", icon: "📊", label: "View Results", desc: "Review all quiz attempts" },
     ];
 
     return (
-        <div style={{ padding: "20px" }}>
-            <h1>Admin Dashboard</h1>
+        <div className="page-container">
+            <h1 style={{ marginBottom: "4px" }}>Admin Dashboard</h1>
+            <p className="text-muted" style={{ marginBottom: "28px" }}>Overview of your platform's activity.</p>
 
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", marginBottom: "30px" }}>
-                {statCards.map((card) => (
-                    <div
-                        key={card.label}
-                        style={{
-                            border: "1px solid #ddd",
-                            borderRadius: "8px",
-                            padding: "20px",
-                            width: "160px",
-                            textAlign: "center",
-                        }}
-                    >
-                        <p style={{ fontSize: "28px", margin: 0, fontWeight: "bold" }}>{card.value}</p>
-                        <p style={{ margin: 0, color: "#666" }}>{card.label}</p>
+            <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                gap: "16px",
+                marginBottom: "36px",
+            }}>
+                {statCards.map((s) => (
+                    <div key={s.label} className="card" style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                        <div style={{
+                            width: "48px", height: "48px", borderRadius: "10px",
+                            background: `${s.color}18`, display: "flex",
+                            alignItems: "center", justifyContent: "center", fontSize: "22px", flexShrink: 0,
+                        }}>
+                            {s.icon}
+                        </div>
+                        <div>
+                            <div style={{ fontSize: "24px", fontWeight: 800, color: s.color, lineHeight: 1 }}>{s.value}</div>
+                            <div className="text-muted" style={{ fontSize: "13px", marginTop: "4px" }}>{s.label}</div>
+                        </div>
                     </div>
                 ))}
             </div>
 
-            <h2>Manage</h2>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+            <h2 style={{ marginBottom: "16px" }}>Manage</h2>
+            <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                gap: "16px",
+            }}>
                 {links.map((link) => (
                     <Link key={link.to} to={link.to}>
-                        <button style={{ padding: "10px 20px", cursor: "pointer" }}>
-                            {link.label}
-                        </button>
+                        <div className="card card-hover" style={{ height: "100%" }}>
+                            <div style={{ fontSize: "26px", marginBottom: "10px" }}>{link.icon}</div>
+                            <h3 style={{ margin: "0 0 4px", fontSize: "16px" }}>{link.label}</h3>
+                            <p className="text-muted" style={{ fontSize: "13px", margin: 0 }}>{link.desc}</p>
+                        </div>
                     </Link>
                 ))}
             </div>

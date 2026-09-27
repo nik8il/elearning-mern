@@ -20,44 +20,50 @@ function Results() {
                 setLoading(false);
             }
         };
-
         fetchResults();
     }, []);
 
     if (loading) {
-        return <p style={{ textAlign: "center" }}>Loading results...</p>;
+        return <p style={{ textAlign: "center", padding: "60px" }} className="text-muted">Loading results...</p>;
     }
 
     return (
-        <div style={{ padding: "20px" }}>
-            <h1>Quiz Results</h1>
+        <div className="page-container">
+            <h1 style={{ marginBottom: "24px" }}>Quiz Results</h1>
 
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead>
-                    <tr style={{ borderBottom: "2px solid #ddd", textAlign: "left" }}>
-                        <th style={{ padding: "8px" }}>Student</th>
-                        <th style={{ padding: "8px" }}>Quiz</th>
-                        <th style={{ padding: "8px" }}>Score</th>
-                        <th style={{ padding: "8px" }}>Percentage</th>
-                        <th style={{ padding: "8px" }}>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {results.map((result) => (
-                        <tr key={result._id} style={{ borderBottom: "1px solid #eee" }}>
-                            <td style={{ padding: "8px" }}>
-                                {result.student?.name} ({result.student?.email})
-                            </td>
-                            <td style={{ padding: "8px" }}>{result.quiz?.title}</td>
-                            <td style={{ padding: "8px" }}>{result.score}/{result.totalQuestions}</td>
-                            <td style={{ padding: "8px" }}>{result.percentage}%</td>
-                            <td style={{ padding: "8px" }}>
-                                {new Date(result.createdAt).toLocaleDateString()}
-                            </td>
+            <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+                <table>
+                    <thead>
+                        <tr style={{ background: "var(--color-bg)", textAlign: "left" }}>
+                            <th style={{ padding: "14px 20px", fontSize: "12px", textTransform: "uppercase", color: "var(--color-text-muted)" }}>Student</th>
+                            <th style={{ padding: "14px 20px", fontSize: "12px", textTransform: "uppercase", color: "var(--color-text-muted)" }}>Quiz</th>
+                            <th style={{ padding: "14px 20px", fontSize: "12px", textTransform: "uppercase", color: "var(--color-text-muted)" }}>Score</th>
+                            <th style={{ padding: "14px 20px", fontSize: "12px", textTransform: "uppercase", color: "var(--color-text-muted)" }}>Percentage</th>
+                            <th style={{ padding: "14px 20px", fontSize: "12px", textTransform: "uppercase", color: "var(--color-text-muted)" }}>Date</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {results.map((result) => (
+                            <tr key={result._id} style={{ borderTop: "1px solid var(--color-border)" }}>
+                                <td style={{ padding: "14px 20px" }}>
+                                    <div style={{ fontWeight: 600 }}>{result.student?.name}</div>
+                                    <div className="text-faint" style={{ fontSize: "12px" }}>{result.student?.email}</div>
+                                </td>
+                                <td style={{ padding: "14px 20px" }}>{result.quiz?.title}</td>
+                                <td style={{ padding: "14px 20px" }}>{result.score}/{result.totalQuestions}</td>
+                                <td style={{ padding: "14px 20px" }}>
+                                    <span className={`badge ${result.percentage >= 50 ? "badge-success" : "badge-danger"}`}>
+                                        {result.percentage}%
+                                    </span>
+                                </td>
+                                <td style={{ padding: "14px 20px" }} className="text-muted">
+                                    {new Date(result.createdAt).toLocaleDateString()}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }

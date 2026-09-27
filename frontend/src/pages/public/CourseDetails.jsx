@@ -79,66 +79,90 @@ function CourseDetails() {
     };
 
     if (loading) {
-        return <p style={{ textAlign: "center", padding: "40px" }}>Loading course...</p>;
+        return <p style={{ textAlign: "center", padding: "60px" }} className="text-muted">Loading course...</p>;
     }
 
     if (error) {
-        return <p style={{ textAlign: "center", color: "red", padding: "40px" }}>{error}</p>;
+        return <p style={{ textAlign: "center", color: "var(--color-danger)", padding: "60px" }}>{error}</p>;
     }
 
     return (
-        <div className="page-container" style={{ maxWidth: "750px" }}>
-            <Link to="/courses">← Back to Courses</Link>
-
-            <div className="card" style={{ marginTop: "16px" }}>
-                <div style={{
-                    fontSize: "12px",
-                    fontWeight: "bold",
-                    color: "#2563eb",
-                    backgroundColor: "#eff6ff",
-                    padding: "4px 10px",
-                    borderRadius: "12px",
-                    display: "inline-block",
-                    marginBottom: "12px",
-                }}>
-                    {course.category}
-                </div>
-
-                <h1 style={{ margin: "0 0 12px" }}>{course.title}</h1>
-
-                <div style={{ display: "flex", gap: "20px", color: "#6b7280", fontSize: "14px", marginBottom: "20px" }}>
-                    <span>👤 {course.instructor}</span>
-                    <span>📖 {lessonCount} {lessonCount === 1 ? "lesson" : "lessons"}</span>
-                </div>
-
-                <p style={{ lineHeight: "1.6", marginBottom: "24px" }}>{course.description}</p>
-
-                {enrollMessage && (
-                    <p style={{
-                        padding: "10px",
-                        backgroundColor: enrollMessage.includes("success") ? "#d1fae5" : "#fee2e2",
-                        borderRadius: "6px",
-                        color: enrollMessage.includes("success") ? "#065f46" : "#991b1b",
-                    }}>
-                        {enrollMessage}
-                    </p>
-                )}
-
-                {isEnrolled ? (
-                    <Link to={`/learn/${course._id}`}>
-                        <button style={{ padding: "12px 28px", fontSize: "16px" }}>
-                            Go to Course
-                        </button>
+        <div>
+            {/* Header banner */}
+            <div style={{
+                background: "linear-gradient(135deg, #4338ca, #4f46e5)",
+                padding: "50px 20px 90px",
+                color: "white",
+            }}>
+                <div className="page-container" style={{ padding: 0 }}>
+                    <Link to="/courses" style={{ color: "rgba(255,255,255,0.85)", fontSize: "13px" }}>
+                        ← Back to Courses
                     </Link>
-                ) : (
-                    <button
-                        onClick={handleEnroll}
-                        disabled={enrolling}
-                        style={{ padding: "12px 28px", fontSize: "16px" }}
-                    >
-                        {enrolling ? "Enrolling..." : "Enroll Now"}
-                    </button>
-                )}
+                    <div className="badge" style={{
+                        backgroundColor: "rgba(255,255,255,0.15)",
+                        color: "white",
+                        margin: "16px 0 12px",
+                    }}>
+                        {course.category}
+                    </div>
+                    <h1 style={{ color: "white", fontSize: "34px", margin: "0 0 8px" }}>{course.title}</h1>
+                    <p style={{ opacity: 0.85, margin: 0 }}>By {course.instructor}</p>
+                </div>
+            </div>
+
+            {/* Content card, overlapping the banner */}
+            <div className="page-container" style={{ marginTop: "-60px", position: "relative" }}>
+                <div className="card" style={{ maxWidth: "750px" }}>
+                    <div style={{
+                        display: "flex",
+                        gap: "24px",
+                        paddingBottom: "20px",
+                        marginBottom: "20px",
+                        borderBottom: "1px solid var(--color-border)",
+                    }}>
+                        <div>
+                            <div className="text-faint" style={{ fontSize: "12px", fontWeight: 600, textTransform: "uppercase" }}>Lessons</div>
+                            <div style={{ fontSize: "20px", fontWeight: 700 }}>📖 {lessonCount}</div>
+                        </div>
+                        <div>
+                            <div className="text-faint" style={{ fontSize: "12px", fontWeight: 600, textTransform: "uppercase" }}>Category</div>
+                            <div style={{ fontSize: "20px", fontWeight: 700 }}>{course.category}</div>
+                        </div>
+                    </div>
+
+                    <h3>About this course</h3>
+                    <p style={{ lineHeight: "1.7", color: "var(--color-text-muted)" }}>{course.description}</p>
+
+                    {enrollMessage && (
+                        <div style={{
+                            padding: "12px 16px",
+                            borderRadius: "var(--radius-sm)",
+                            marginBottom: "16px",
+                            backgroundColor: enrollMessage.includes("success") ? "var(--color-success-bg)" : "var(--color-danger-bg)",
+                            color: enrollMessage.includes("success") ? "var(--color-success)" : "var(--color-danger)",
+                            fontWeight: 600,
+                            fontSize: "14px",
+                        }}>
+                            {enrollMessage}
+                        </div>
+                    )}
+
+                    {isEnrolled ? (
+                        <Link to={`/learn/${course._id}`}>
+                            <button style={{ padding: "14px 32px", fontSize: "15px" }}>
+                                Go to Course →
+                            </button>
+                        </Link>
+                    ) : (
+                        <button
+                            onClick={handleEnroll}
+                            disabled={enrolling}
+                            style={{ padding: "14px 32px", fontSize: "15px" }}
+                        >
+                            {enrolling ? "Enrolling..." : "Enroll Now — It's Free"}
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     );
